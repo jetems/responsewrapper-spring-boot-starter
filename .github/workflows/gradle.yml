@@ -36,4 +36,4 @@ jobs:
         MY_HUAWEI_SNAPSHOTS_URL: ${{ secrets.MY_HUAWEI_SNAPSHOTS_URL }}
         MY_HUAWEI_USERNAME: ${{ secrets.MY_HUAWEI_USERNAME }}
         MY_HUAWEI_PASSWORD: ${{ secrets.MY_HUAWEI_PASSWORD }}
-      run: ./gradlew build
+      run: ./gradlew publish
