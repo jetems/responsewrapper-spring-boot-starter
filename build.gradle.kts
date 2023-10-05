@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.jetems"
-version = "0.0.4"
+version = "0.0.1"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -52,12 +52,15 @@ publishing {
     }
     repositories {
         maven {
-            val releasesRepoUrl = uri(extra["my.huawei.release.url"].toString())
-            val snapshotsRepoUrl = uri(extra["my.huawei.snapshots.url"].toString())
+            // system.getenv() 用于读取环境变量，如果环境变量不存在，则使用 extra["my.huawei.release.url"] 读取 gradle.properties 中的配置
+            val releasesRepoUrl =
+                uri(System.getenv("MY_HUAWEI_RELEASE_URL") ?: extra["my.huawei.release.url"].toString())
+            val snapshotsRepoUrl =
+                uri(System.getenv("MY_HUAWEI_SNAPSHOTS_URL") ?: extra["my.huawei.snapshots.url"].toString())
             url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
             credentials {
-                username = extra["my.huawei.username"].toString()
-                password = extra["my.huawei.password"].toString()
+                username = System.getenv("MY_HUAWEI_USERNAME") ?: extra["my.huawei.username"].toString()
+                password = System.getenv("MY_HUAWEI_PASSWORD") ?: extra["my.huawei.password"].toString()
             }
         }
     }
