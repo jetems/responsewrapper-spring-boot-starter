@@ -1,0 +1,3 @@
+com.jetems.responsewrapper.spring.boot.autoconfigure.ResponseWrapperAutoConfiguration
+com.jetems.responsewrapper.GlobalDefaultExceptionHandler
+com.jetems.responsewrapper.ResponseWrapperBodyAdvice
