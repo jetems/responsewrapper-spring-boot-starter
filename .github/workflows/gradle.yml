@@ -31,4 +31,9 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2 # v2.6.0
     - name: Execute Gradle build
+      env:
+        MY_HUAWEI_RELEASE_URL: ${{ secrets.MY_HUAWEI_RELEASE_URL }}
+        MY_HUAWEI_SNAPSHOTS_URL: ${{ secrets.MY_HUAWEI_SNAPSHOTS_URL }}
+        MY_HUAWEI_USERNAME: ${{ secrets.MY_HUAWEI_USERNAME }}
+        MY_HUAWEI_PASSWORD: ${{ secrets.MY_HUAWEI_PASSWORD }}
       run: ./gradlew build
