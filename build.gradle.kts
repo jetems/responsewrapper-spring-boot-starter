@@ -5,7 +5,8 @@ plugins {
     id("org.springframework.boot") version "3.1.4" apply false
     id("io.spring.dependency-management") version "1.1.3"
     id("maven-publish")
-    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
+    id("io.github.gradle-nexus.publish-plugin") version "2.0.0-rc-1"
+    signing
     kotlin("jvm") version "1.8.22"
     kotlin("plugin.spring") version "1.8.22"
     kotlin("kapt") version "1.8.22" // 用于生成 spring-configuration-metadata.json
@@ -35,6 +36,7 @@ configurations {
     }
 }
 
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {
@@ -46,6 +48,29 @@ publishing {
                 }
                 usage("java-runtime") {
                     fromResolutionResult()
+                }
+            }
+            pom {
+                name.set("responsewrapper-spring-boot-starter")
+                description.set("Unify response data format")
+                url.set("https://github.com/jetems/responsewrapper-spring-boot-starter")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("deluxebear")
+                        name.set("deluxebear")
+                        email.set("deluxebear@gmail.com")
+                    }
+                }
+                scm {
+                    connection.set("scm:git:https://github.com/jetems/responsewrapper-spring-boot-starter.git")
+                    developerConnection.set("scm:git:https://github.com/jetems/responsewrapper-spring-boot-starter.git")
+                    url.set("https://github.com/jetems/responsewrapper-spring-boot-starter")
                 }
             }
         }
@@ -65,7 +90,25 @@ publishing {
         }
     }
 }
-
+signing {
+    //使用环境变量中的PGP_SECRET和PGP_PASSWORD进行签名，否则使用gradle.properties中的配置
+    val signingKey = System.getenv("PGP_SECRET")
+    val signingPassword = System.getenv("PGP_PASSPHRASE")
+    if (!signingKey.isNullOrEmpty() && !signingPassword.isNullOrEmpty()) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+    }
+    sign(publishing.publications["mavenJava"])
+}
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl = uri("https://s01.oss.sonatype.org/service/local/")
+            snapshotRepositoryUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+            username = System.getenv("SONATYPE_USERNAME") ?: extra["sonatype.username"].toString()
+            password = System.getenv("SONATYPE_PASSWORD") ?: extra["sonatype.password"].toString()
+        }
+    }
+}
 dependencyManagement {
     imports {
         mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES)

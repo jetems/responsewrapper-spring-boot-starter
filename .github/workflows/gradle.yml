@@ -36,4 +36,8 @@ jobs:
         MY_HUAWEI_SNAPSHOTS_URL: ${{ secrets.MY_HUAWEI_SNAPSHOTS_URL }}
         MY_HUAWEI_USERNAME: ${{ secrets.MY_HUAWEI_USERNAME }}
         MY_HUAWEI_PASSWORD: ${{ secrets.MY_HUAWEI_PASSWORD }}
-      run: ./gradlew publish
+        PGP_SECRET: ${{ secrets.PGP_SECRET }}
+        PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+        SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+        SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      run: ./gradlew publishToSonatype
