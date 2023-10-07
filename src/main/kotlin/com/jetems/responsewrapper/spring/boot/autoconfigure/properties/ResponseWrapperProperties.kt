@@ -6,5 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 data class ResponseWrapperProperties(
     var enable: Boolean = true,
     var excludePackages: List<String> = listOf(),
-    var errorCodes: Map<Int, String> = mapOf()
+    var errorCodes: Map<Int, String> = mapOf(),
+    var successCode: Int = 0,
+    var successMessage: String = "success"
 )

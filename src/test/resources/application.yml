@@ -1,6 +1,6 @@
 response:
   wrapper:
-    enable: false
+    enable: true
     #    排除不需要包装的包
     exclude-packages:
       - com.jetems.responsewrapper.a
@@ -8,8 +8,12 @@ response:
     error-codes:
       404: Resource not found
       500: Internal Server Error
+      1001: 业务异常，参数错误
+    #   定义成功码和成功信息
+    success-code: 0
+    success-message: ok
 
-# 对于springboot项目，如果需要捕获404错误，需要在application.yml中添加如下配置：
+# 如果需要捕获404错误，需要在application.yml中添加如下配置：
 spring:
   mvc:
     throw-exception-if-no-handler-found: true

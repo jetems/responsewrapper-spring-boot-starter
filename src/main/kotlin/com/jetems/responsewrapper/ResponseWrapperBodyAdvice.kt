@@ -15,7 +15,7 @@ import java.lang.reflect.Method
 
 @RestControllerAdvice
 @ConditionalOnExpression("\${response.wrapper.enable:true}")
-class ResponseWrapperBodyAdvice(private val responseWrapperProperties: ResponseWrapperProperties) :
+class ResponseWrapperBodyAdvice(private val resp: ResponseWrapperProperties) :
     ResponseBodyAdvice<Any> {
     override fun supports(returnType: MethodParameter, converterType: Class<out HttpMessageConverter<*>>): Boolean {
         val method: Method? = returnType.method
@@ -27,13 +27,13 @@ class ResponseWrapperBodyAdvice(private val responseWrapperProperties: ResponseW
             }
         }
         // 如果设置了excludePackages，则不包装
-        if (responseWrapperProperties.excludePackages.isNotEmpty()) {
+        if (resp.excludePackages.isNotEmpty()) {
             val packageName = returnType.declaringClass.`package`.name
-            if (responseWrapperProperties.excludePackages.contains(packageName)) {
+            if (resp.excludePackages.contains(packageName)) {
                 return false
             }
         }
-        return responseWrapperProperties.enable
+        return resp.enable
     }
 
     override fun beforeBodyWrite(
@@ -44,16 +44,21 @@ class ResponseWrapperBodyAdvice(private val responseWrapperProperties: ResponseW
         request: ServerHttpRequest,
         response: ServerHttpResponse
     ): Any? {
-        return if (body is String) jacksonObjectMapper().writeValueAsString(ResponseWrapper(body)) else ResponseWrapper(
-            body
-        );
+        return when (body) {
+            is String -> jacksonObjectMapper().writeValueAsString(
+                ResponseWrapper.success(
+                    resp.successCode,
+                    resp.successMessage,
+                    body
+                )
+            )
+
+            is ResponseWrapper<*> -> body
+            else -> ResponseWrapper.success(resp.successCode, resp.successMessage, body)
+        }
     }
 
 
 }
 
-class ResponseWrapper(body: Any?) {
-    val code = 0
-    val message = "success"
-    val data = body
-}
+
